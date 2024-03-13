@@ -18,7 +18,7 @@ app.use(session({
     saveUninitialized: true,
   }));
 
-mongoose.connect('mongodb://127.0.0.1:27017/codelab')
+mongoose.connect('mongodb://127.0.0.1:27017/codeLab')
 .then(() => {
     console.log("database connected");
 })
