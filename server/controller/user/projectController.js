@@ -28,11 +28,10 @@ const firebaseConfig = {
     } = require("firebase/storage");
 
     const storage = getStorage()
-
     require("dotenv").config();
 
    module.exports = {
-
+    
     addProject:async (req,res)=>{
         const currentDate = new Date();
 		const day = currentDate.getDate();
@@ -114,7 +113,7 @@ const firebaseConfig = {
 					thumbnail: thumbnailLink,
 					features: features,
 					project_link: projectLink,
-					publisher: "rafeeq",
+					publisher: "Shibil",
 					published_date: date2,
 					last_updated: date2,
 					views: 0,
@@ -130,7 +129,9 @@ const firebaseConfig = {
 			});
 		});
 
-		res.send("done");
+        res.json({
+            status:"success"
+        })
 	},
     
     }
