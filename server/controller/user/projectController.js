@@ -133,6 +133,47 @@ const firebaseConfig = {
             status:"success"
         })
 	},
+    getLatestList: async (req, res) => {
+		
+		try {
+			const data = await projectSchema.find().sort({ _id: -1 }).limit(2);
+			res.json(data);
+		} catch (error) {
+			console.log(error);
+		}
+	},
+	getPopularList: async (req, res) => {
+		try {
+			const data = await projectSchema.find().sort({views: -1 }).limit(2);
+			res.json(data);
+		} catch (error) {
+			console.log(error);
+		}
+	},
+	getCategoryList: async (req, res) => {
+		try {
+			const data = await categorySchema.find({status:"Listed"})
+			res.json(data);
+		} catch (error) {
+			console.log(error);
+		}
+	},
+	getTopDevelopers: async (req, res) => {
+		try {
+			const data = await userSchema.find();
+			res.json(data);
+		} catch (error) {
+			console.log(error);
+		}
+	},
+	getDescription:async (req,res) =>{
+		try{
+			const data = await projectSchema.findOne({project_id:req.params.id})
+			res.json(data)
+		}catch(error){
+			console.log(error);
+		}
+	}
     
     }
 
