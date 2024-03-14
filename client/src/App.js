@@ -17,6 +17,8 @@ import Profile from './components/Pages/Profile';
 import EditProfile from './components/Pages/EditProfile';
 import AddProject from './components/Pages/AddProject';
 import ProjectList from './components/Pages/ProjectList';
+import { Provider } from 'react-redux';
+import appStore from './utils/appStore';
 
 function App() {
   const appRouter =  createBrowserRouter([
@@ -57,7 +59,7 @@ function App() {
       element:<SetPassword />
     },
     {
-      path : '/description',
+      path : '/description/:id',
       element:< Description />
     },
     {
@@ -87,7 +89,8 @@ function App() {
   ])
   return (
     <div className="App">
-        <RouterProvider router={appRouter} />
+        <Provider store={appStore}> <RouterProvider router={appRouter} /></Provider>
+       
     </div>
   );
 }

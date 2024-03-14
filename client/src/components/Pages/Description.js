@@ -1,30 +1,45 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import TopNavigation from '../TopNavigation'
 import {  desktop, github, projectDemo, screenshot, time } from '../../utils/constants'
 import RelatedProjects from '../RelatedProjects'
+import { useParams } from 'react-router-dom'
+import axios from 'axios'
+import { calcDate } from '../../utils/dateDifference'
+import { formatedDate } from '../../utils/formateDate'
 
 const Description = () => {
+    const {id} = useParams()
+    const [Description,setDescription] = useState(null)
+    useEffect(()=>{
+        async function getDescription(){
+            const {data} = await axios.get('/description/'+id)
+            setDescription(data)
+        }
+        getDescription()
+    
+    },[])
+
   return (
     <div  >
         <TopNavigation title={'Developer Name'} bg={'white'} />
         <div className='bg-primary-main'>
             <div className='flex justify-between items-center p-4'>
                 <div className='w-8/12'>
-                    <h1 className='text-sm capitalize text-[#333333]'> 5 fastest runner in the world that change your mind</h1>
-                    <p className='text-xs text-[#666666] mt-1 '>Akshay Sainy</p>
+                    <h1 className='text-sm capitalize text-[#333333]'>{Description?.title}</h1>
+                    <p className='text-xs text-[#666666] mt-1 '>{Description?.publisher}</p>
                 </div>
                 <div className='flex flex-col items-center space-y-2'>
                     <div className='px-5 bg-[#D2E8DB] text-[#0BA046]'>
-                        Free
+                    {Description?.price}
                     </div>
                     <div className=" flex items-center space-x-1 ">
                         <img className='w-5 h-5' alt="eye" src={time} />
-                        <p className="text-xs text-[#666666]">11 min</p>
+                        <p className="text-xs text-[#666666]">{calcDate(Description?.published_date).result}</p>
                     </div>
                 </div>
             </div>
             <div className='px-4'>
-                <img className='h-52 w-full object-cover' alt='bg-img' src={projectDemo}></img>
+                <img className='h-52 w-full object-cover' alt='bg-img' src={Description?.thumbnail}></img>
             </div>
             <div className='w-full flex mt-5 px-2 '>
                 <button className='w-1/2 flex items-center justify-center space-x-3 text-white font-medium py-1 rounded-lg mx-3  bg-teritary-main'>
@@ -38,50 +53,42 @@ const Description = () => {
             </div>
             <div className='mx-4  mt-5 bg-white'>
                 <h1 className='py-2 px-2 border-b font-medium'>Overview</h1>
-                <p className='text-[#666666] px-2 text-sm py-3'>FPPlatform is the fixed-price marketplace software that is capable to launch fiverr clones, microworkers, etc. Ideal for micro jobs, tasks, errands, etc marketplace where consumers outsource micro tasks or sellers offer micro online and offline services.</p>
+                <p className='text-[#666666] px-2 text-sm py-3 first-letter:uppercase'>{Description?.overview}</p>
             </div>
             <div className='mx-4  mt-5 bg-white'>
                 <h1 className='py-2 px-2 border-b font-medium'>Features</h1>
-                <p className='text-[#666666] px-2 text-sm py-3'>FPPlatform is the fixed-price marketplace software that is capable to launch fiverr clones, microworkers, etc. Ideal for micro jobs, tasks, errands, etc marketplace where consumers outsource micro tasks or sellers offer micro online and offline services.</p>
+                <div className='p-2 text-[#666666] ' dangerouslySetInnerHTML={{
+                    __html:Description?.features
+                }}>
+
+                </div>
             </div>
 
-            <div className='mx-4  mt-5 bg-white'>
-                <h1 className='py-2 px-2 border-b font-medium'>Requirements</h1>
-                <p className='text-[#666666] px-2 text-sm py-3'>FPPlatform is the fixed-price marketplace software that is capable to launch fiverr clones, microworkers, etc. Ideal for micro jobs, tasks, errands, etc marketplace where consumers outsource micro tasks or sellers offer micro online and offline services.</p>
-            </div>
-
-            <div className='mx-4  mt-5 bg-white'>
-                <h1 className='py-2 px-2 border-b font-medium'>Instructions</h1>
-                <p className='text-[#666666] px-2 text-sm py-3'>FPPlatform is the fixed-price marketplace software that is capable to launch fiverr clones, microworkers, etc. Ideal for micro jobs, tasks, errands, etc marketplace where consumers outsource micro tasks or sellers offer micro online and offline services.</p>
-            </div>
-
+            
             <div className='mx-4  mt-5 bg-white drop-shadow-xl'>
                 <h1 className='py-2 px-2 border-b font-medium'>Information</h1>
                 <div>
                     <table className='w-full text-[#666666] text-sm '>
                         <tr className='bg-primary-main'>
                           <td className='w-1/2 px-2 py-3  '>Category</td>
-                          <td className='text-teritary-main'>PHP Scripts</td>
+                          <td className='text-teritary-main'>{Description?.category}</td>
                         </tr>
                         <tr className=''>
-                          <td className=' px-2'>First Release</td>
-                          <td>19 February 2024</td>
+                          <td className=' px-2 py-3'>First Release</td>
+                          <td>{Description && formatedDate(Description?.published_date)}</td>
                         </tr>
                         <tr className='bg-primary-main'>
                           <td className='px-2 py-3'>Last update</td>
-                          <td>19 February 2024</td>
+                          <td>{Description && formatedDate(Description?.last_updated)}</td>
                         </tr>
+                     
                         <tr className=''>
-                          <td className='px-2 py-3'>Fiels included </td>
-                          <td>php,.html,.sql,.xml</td>
+                          <td className='px-2 py-3'>Frameworks/Languages </td>
+                          <td>{Description?.frameworks_used}</td>
                         </tr>
                         <tr className='bg-primary-main'>
-                          <td className='px-2 py-3'>Frameworks/Languages </td>
-                          <td>React JS</td>
-                        </tr>
-                        <tr className=''>
                           <td className='px-2 py-3'>Data base  </td>
-                          <td>My sql ,mongodb</td>
+                          <td>{Description?.db_used}</td>
                         </tr>
                     </table>
                 </div>
@@ -90,7 +97,7 @@ const Description = () => {
             <div className='px-2 py-4 flex flex-col items-center  mx-4 rounded-sm space-y-3 bg-secondary-mainBorder my-3'>
                 <div> <img className='h-16' alt='github' src={github}></img></div>
                 <div className='flex flex-col items-center'>
-                    <h1>Shibil Muhamad P k</h1>
+                    <h1 className='capitalize'>{Description?.publisher}</h1>
                        <p className='text-xs text-[#666666] '>Web Developer</p>
                 </div>
               
