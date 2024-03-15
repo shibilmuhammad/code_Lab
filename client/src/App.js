@@ -67,7 +67,7 @@ function App() {
       element:< LatestProject />
     },
     {
-      path : '/Developer',
+      path : '/developer/:publisher_id',
       element:< Developer />
     },
     {

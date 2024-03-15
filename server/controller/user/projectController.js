@@ -62,7 +62,6 @@ const firebaseConfig = {
         //upload screen shots and get link
         screenShotList.map((item) => {
 			const blobfile= base64ImageToBlob(item);
-            console.log('screenshotBlobfile',blobfile);
 			const storageRef = ref(
 				storage,
 				"screenshots/" + Date.now() + "." + blobfile.type.split("/")[1]
@@ -101,7 +100,7 @@ const firebaseConfig = {
 					top_p: 1,
 				});
 				const newProject = new projectSchema({
-					publisher_id: "CD1",
+					publisher_id: req.session.publisher_id,
 					title: title,
 					project_id: lastid + 1,
 					category: category,

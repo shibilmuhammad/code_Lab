@@ -1,5 +1,6 @@
 import React from 'react'; 
 import { FAV_ICON, LOGO, USER_ICON } from '../utils/constants';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
@@ -10,7 +11,7 @@ const Header = () => {
       </div>
       <div className='flex space-x-3'>
         <img  className='w-8' alt='FAV-ICON'  src={FAV_ICON}></img>
-        <img  className='w-8' alt='USER-ICON'  src={USER_ICON}></img>
+       <Link to={'/profile'}> <img  className='w-8' alt='USER-ICON'  src={USER_ICON}></img></Link>
       </div>
       
     </div>

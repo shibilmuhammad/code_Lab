@@ -22,6 +22,7 @@ import settings from '../assets/Settings.png';
 import privacy from '../assets/Security Lock.png';
 import Logout from '../assets/Logout Rounded.png';
 import uploadicon from '../assets/Upload.png'
+import userIcon from '../assets/dev.png'
 export {projectDemo}
 export const LOGO  = LOGO1;
 export const FAV_ICON = favIcon;
@@ -47,3 +48,4 @@ export const SettingsIcon = settings;
 export const PrivacyIcon = privacy;
 export const LogoutIcon = Logout
 export const upload = uploadicon
+export const avatar = userIcon

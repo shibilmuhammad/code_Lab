@@ -8,6 +8,8 @@ import axios from 'axios'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'
 import {useNavigate} from 'react-router-dom'
+import { frameworks } from "../../utils/frameWorks"
+
 const AddProject = () => {
     const navigate = useNavigate()
     const title = useRef(null)
@@ -21,7 +23,7 @@ const AddProject = () => {
     const [thumbnail, setThumbnail] = useState(null);
     const [scrnshot, setScrnshot] = useState(null);
     const [formError, setFormError] = useState(null);
-
+    const [frameWorksList,setFrameWorksList] = useState([])
     
     const formSubmit =(e)=>{
         alert(features)
@@ -29,8 +31,6 @@ const AddProject = () => {
         const validationResult = validateAddproject(title.current.value,category.current.value,liveLink.current.value,overview.current.value,scrnshot,features,thumbnail,framework.current.value,database.current.value,projectLink.current.value)
         setFormError(validationResult)
         if(!validationResult){
-            console.log('hi');
-            console.log('screenshot is',scrnshot);
             axios.post('/addProject',{
                title : title.current.value,
                category: category.current.value,
@@ -38,7 +38,7 @@ const AddProject = () => {
                overview: overview.current.value,
                 thumbnail:thumbnail,
                 features:features,
-                framework:framework.current.value,
+                framework:frameWorksList,
                 database:database.current.value,
                 screenShot:scrnshot,
                 projectLink:projectLink.current.value
@@ -49,9 +49,7 @@ const AddProject = () => {
         }
     }   
     const handleThumbnailChange = (e) => {
-
         const reader = new FileReader();
-
 		reader.onload = () => {
 			if (reader.readyState === 2) {
 				setThumbnail(reader.result);
@@ -62,7 +60,6 @@ const AddProject = () => {
     const handlescreenshotChange = (e) => {
         const files = Array.from(e.target.files);
 		setScrnshot([]);
-        console.log(files);
 		files.forEach((file) => {
 			const reader = new FileReader();
 
@@ -92,7 +89,10 @@ const AddProject = () => {
     const exampleFramework = "MongoDB, Express.js, React, Node.js";
     const exampleDatabase = "MongoDB";
 
-
+    const frameworkHandle = ()=>{
+        frameWorksList.push(framework.current.value);
+        setFrameWorksList([...frameWorksList]);
+    }
   return (
     <div className="pb-10">
      <TopNavigation title={'Add project'} />
@@ -173,8 +173,34 @@ const AddProject = () => {
             </div>
             <div className='space-y-1'>
                 <label className='text-[#333333] font-medium'>Frameworks/Languages used </label>
+                <div className="flex flex-wrap   ">
+                    {frameWorksList.map((framework,index)=>{
+                        return(
+                            <div 
+                            id="new+div" 
+                            className="flex bg-teritary-main rounded-full p-1 pl-3 w-max  gap-2 h-max mx-1 my-1 "> 
+                            <div> 
+                             <span class="text-white">{framework}</span> 
+                            </div> 
+                            <button 
+                             onClick={() => { 
+                              frameWorksList.splice(index,1) 
+                              setFrameWorksList([...frameWorksList]) 
+                             }} 
+                             type="button" 
+                             id="new+button" 
+                             className=" text-white rounded-full h-6 w-6"> 
+                            <i class="bi bi-x"></i> 
+                            </button> 
+                           </div>
+                        )
+                    })}
+                </div>
+             
                 <div className='flex items-center border py-2 rounded-lg border-secondary-mainBorder px-2'>
-                    <input ref={framework}  placeholder={`Eg: ${exampleFramework}`}   className='w-full outline-none' ></input>
+                    <select  ref={framework} className="w-full outline-none" onChange={frameworkHandle}>
+                        {frameworks.map((framework,index)=><option  key={index} value={framework.name}>{framework.name}</option>)}
+                    </select>
                 </div>
             </div>
             <div className='space-y-1'>

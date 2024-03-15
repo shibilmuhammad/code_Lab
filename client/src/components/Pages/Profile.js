@@ -1,17 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import TopNavigation from '../TopNavigation'
-import { PrivacyIcon, SettingsIcon, contactIcon, desktop, github, projectsIcon } from '../../utils/constants'
+import { PrivacyIcon, SettingsIcon, avatar, contactIcon, desktop, github, projectsIcon } from '../../utils/constants'
+import axios from 'axios'
 
 const Profile = () => {
+    const [userDetails,setUserDetails] = useState(null)
+    useEffect( ()=>{
+        async function getProfileDetails(){
+            const {data} = await axios.get('/profile');
+            setUserDetails(data)
+        }
+        getProfileDetails()
+    },[])
   return (
     <div>
         <TopNavigation title={'Profile'}  />
         <div className='bg-primary-main h-screen'>
             <div className='px-2 py-4 flex flex-col items-center  mx-4 rounded-sm space-y-3  py-13'>
-                    <div className='h-16 w-16 bg-secondary-mainBorder rounded-full'></div>
+                    <div className='h-16 w-16 bg-teritary-main rounded-full border flex justify-center items-center'>
+                        <img alt='avatar' className='h-full w-full ' src={avatar}></img>
+                    </div>
                     <div className='flex flex-col items-center'>
-                        <h1 className='font-medium'>Shibil Muhamad P k</h1>
-                        <p className='text-xs text-[#666666] '>Web Developer</p>
+                        <h1 className='font-medium'>{userDetails?.name}</h1>
+                        <p className='text-xs text-[#666666] '>{userDetails?.title}</p>
                     </div>
             </div>
           <div className='flex justify-center  mt-2' >

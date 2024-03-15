@@ -25,7 +25,7 @@ const Description = () => {
         <div className='bg-primary-main'>
             <div className='flex justify-between items-center p-4'>
                 <div className='w-8/12'>
-                    <h1 className='text-sm capitalize text-[#333333]'>{Description?.title}</h1>
+                    <h1 className='text-xl font-semibold capitalize text-[#333333]'>{Description?.title}</h1>
                     <p className='text-xs text-[#666666] mt-1 '>{Description?.publisher}</p>
                 </div>
                 <div className='flex flex-col items-center space-y-2'>
@@ -34,7 +34,7 @@ const Description = () => {
                     </div>
                     <div className=" flex items-center space-x-1 ">
                         <img className='w-5 h-5' alt="eye" src={time} />
-                        <p className="text-xs text-[#666666]">{calcDate(Description?.published_date).result}</p>
+                        <p className="text-xs text-[#666666]">{calcDate(Description?.published_date).result || "Recent"}</p>
                     </div>
                 </div>
             </div>
@@ -84,7 +84,7 @@ const Description = () => {
                      
                         <tr className=''>
                           <td className='px-2 py-3'>Frameworks/Languages </td>
-                          <td>{Description?.frameworks_used}</td>
+                          <td>{Description?.frameworks_used.join(', ')}</td>
                         </tr>
                         <tr className='bg-primary-main'>
                           <td className='px-2 py-3'>Data base  </td>

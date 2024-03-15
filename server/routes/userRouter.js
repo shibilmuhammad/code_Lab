@@ -1,10 +1,16 @@
 const express = require('express');
 const router = express.Router()
 const projectController = require('../controller/user/projectController')
+const userController = require('../controller/user/userController')
 router.post('/addProject',projectController.addProject)
 router.get('/getlatest',projectController.getLatestList)
-router.get('/getdevelopers',projectController.getTopDevelopers)
+// router.get('/getdevelopers',projectController.getTopDevelopers)
 router.get('/getpopular',projectController.getPopularList)
 router.get('/getallcategories',projectController.getCategoryList)
 router.get('/description/:id',projectController.getDescription)
+router.post('/signup',userController.signUp)
+router.post('/login',userController.login)
+router.get('/getdevelopers',userController.getDevelopers)
+router.get('/developer/:publisher_id',userController.getDeveloperDetails)
+router.get('/profile',userController.getProfile)
 module.exports = router

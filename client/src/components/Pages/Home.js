@@ -15,8 +15,9 @@ const Home = () => {
   
 			const list = await axios.get("/getlatest");
 			dispatch(addLatest(list?.data));
-			// const topDevelopers = await axios.get("/getdevelopers");
-			// dispatch(addTopDevelopers(topDevelopers?.data));
+			const topDevelopers = await axios.get("/getdevelopers");
+			console.log('topdevelop'+topDevelopers);
+			dispatch(addTopDevelopers(topDevelopers?.data));
 			const popular = await axios.get("/getpopular");
 			dispatch(addPopular(popular?.data));
 			// const categories = await axios.get("/getallcategories");
