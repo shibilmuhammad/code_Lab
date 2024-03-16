@@ -3,8 +3,11 @@ import TopNavigation from '../TopNavigation'
 import { avatar, closeIcon, hide } from '../../utils/constants'
 import axios from 'axios'
 import Demo from '../CropView'
+import { useNavigate } from 'react-router-dom'
+import FormLoading from '../skelton/FormLoad'
 
 const EditProfile = () => {
+    const navigate = useNavigate()
     const[userDetails,setUserDetails] = useState(null);
     const name = useRef(null)
     const headLine = useRef(null)
@@ -12,6 +15,7 @@ const EditProfile = () => {
     const [avatarImg, setAvatar] = useState(avatar);
 	const [picked, setPicked] = useState(false);
 	const [cropped, setCropped] = useState(null);
+    const [loading,setLoading]= useState(false)
     function clearInput(ref){
         if(ref.current) ref.current.value = ''
     }
@@ -27,7 +31,13 @@ const EditProfile = () => {
     },[])
     async function handleForm(e){
         e.preventDefault();
-        const {data} = axios.post('/editprofile',{name:name.current.value,title:headLine.current.value,bio:bio.current.value ,avatar: cropped ? cropped : avatar,})
+        setLoading(true)
+        const {data} = await axios.post('/editprofile',{name:name.current.value,title:headLine.current.value,bio:bio.current.value ,avatar: cropped ? cropped : avatar,})
+
+        if(data.staatus){
+            setLoading(false)
+            navigate('/profile')
+        }
         
     }
     const onChangeImage = (e) => {
@@ -44,6 +54,7 @@ const EditProfile = () => {
   
   return (
     <div>
+        {loading && <FormLoading />}
         <TopNavigation title={'Edit Profile'} />
         <form  onSubmit={(e)=>{handleForm(e)}} className=' py-3'>
         {picked && (

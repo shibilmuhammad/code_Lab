@@ -101,6 +101,10 @@ module.exports = {
         let {name,title,bio,avatar}= req.body;
         const updateFields = {};
         if (name !== '')  updateFields.name = name;
+        if(avatar==='/static/media/dev.5b6adb8e38ee506fde52.png'){
+            updateFields.avatar = "";
+            return updateDb()
+        }
         if(!isValidUrl(avatar) && avatar!=='/static/media/dev.5b6adb8e38ee506fde52.png'){
             file = base64ImageToBlob(avatar);
 				const storageRef = ref(
@@ -110,16 +114,13 @@ module.exports = {
 				uploadBytes(storageRef, file).then((snapshot) => {
 					("Uploaded file!");
 					getDownloadURL(snapshot.ref).then(async (item) => {
-                        (item);
                         updateFields.avatar = item;
                         updateDb()
 					});
 				});
         }else{
-            updateFields.avatar = "";
             updateDb()
         }
-      
          async function updateDb (){
             updateFields.title = title;
             updateFields.bio = bio;
@@ -129,12 +130,15 @@ module.exports = {
                     updateFields,
                     { new: true } 
                 );
-                res.status(200).send("Profile updated successfully.");
+                res.json({staatus:true})
             } catch (error) {
                 console.error( error);
             }
         }
-	}
+	},getMyProjects : async(req,res)=>{
+        const developerProjects = await projects.find({publisher_id:req.session.publisher_id})
+        res.json(developerProjects)
+    }
 
 }
 const isValidUrl = (str) => {
