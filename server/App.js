@@ -20,10 +20,10 @@ app.use(session({
 
 mongoose.connect('mongodb://127.0.0.1:27017/codeLab')
 .then(() => {
-    console.log("database connected");
+    ("database connected");
 })
 .catch(() =>{
-    console.log("error on connecting db")
+    ("error on connecting db")
 })
 
 
@@ -31,5 +31,5 @@ app.use("/",userrouter)
 app.use("/admin",adminrouter)
 
 app.listen(4000,()=>{
-    console.log("started");
+    ("started");
 })

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import TopNavigation from '../TopNavigation'
 import { PrivacyIcon, SettingsIcon, avatar, contactIcon, desktop, github, projectsIcon } from '../../utils/constants'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 const Profile = () => {
     const [userDetails,setUserDetails] = useState(null)
@@ -17,8 +18,8 @@ const Profile = () => {
         <TopNavigation title={'Profile'}  />
         <div className='bg-primary-main h-screen'>
             <div className='px-2 py-4 flex flex-col items-center  mx-4 rounded-sm space-y-3  py-13'>
-                    <div className='h-16 w-16 bg-teritary-main rounded-full border flex justify-center items-center'>
-                        <img alt='avatar' className='h-full w-full ' src={avatar}></img>
+                    <div className='h-16 w-16 bg-teritary-main rounded-full  flex justify-center items-center border border-teritary-main'>
+                        <img alt='avatar' className='h-full w-full rounded-full  ' src={userDetails?.avatar || avatar}></img>
                     </div>
                     <div className='flex flex-col items-center'>
                         <h1 className='font-medium'>{userDetails?.name}</h1>
@@ -27,7 +28,7 @@ const Profile = () => {
             </div>
           <div className='flex justify-center  mt-2' >
             <button className='px-6  rounded-2xl   flex items-center justify-center space-x-3 text-white  py-1  mx-3  bg-teritary-main'>
-                 <span>Edit Profile </span>
+                 <Link to={'/editprofile'}><span>Edit Profile </span></Link>
             </button>
           </div>
 

@@ -26,7 +26,7 @@ const Login = () => {
         const validateResult = validateForm(email.current.value,password.current.value)
         setValidationError(validateResult);
         const {data} = await axios.post('/login',{email:email.current.value,password:password.current.value})
-        console.log("data status",data.status);
+
         if(data.status==='User not exist')return setValidationError("User not exist .If you don't have an acccount click signup button")
         if(!data.status) return setValidationError('Incorrect password!!')
 

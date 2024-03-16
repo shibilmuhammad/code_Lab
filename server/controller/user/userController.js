@@ -3,6 +3,33 @@ const userSchema = require('../../model/user');
 const users = require('../../model/user');
 const projects = require('../../model/projects');
 const saltRounds = 10;
+
+
+
+const firebase = require("firebase/app");
+
+const { FirebaseError, initializeApp } = require("firebase/app");
+const isBase64 = require("is-base64");
+const {
+	getStorage,
+	ref,
+	uploadBytes,
+	getDownloadURL,
+} = require("firebase/storage");
+const firebaseConfig = {
+    apiKey: "AIzaSyAoenVgH_QAnCzh9iVUwv2qAaAmEia8FDQ",
+    authDomain: "codelab-9ee16.firebaseapp.com",
+    projectId: "codelab-9ee16",
+    storageBucket: "codelab-9ee16.appspot.com",
+    messagingSenderId: "509482161524",
+    appId: "1:509482161524:web:c2a4295e9604532fa88821",
+    measurementId: "G-M4TR95HV4N"
+  };
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+const storage = getStorage();
 module.exports = {
     signUp : async (req,res)=>{
         const {name,email,password} = req.body;
@@ -70,5 +97,79 @@ module.exports = {
         const email = req.session.email
         const profile = await userSchema.findOne({email:email});
         res.json(profile)
-    }
+    },editProfile:async (req,res)=>{
+        let {name,title,bio,avatar}= req.body;
+        const updateFields = {};
+        if (name !== '')  updateFields.name = name;
+        if(!isValidUrl(avatar) && avatar!=='/static/media/dev.5b6adb8e38ee506fde52.png'){
+            file = base64ImageToBlob(avatar);
+				const storageRef = ref(
+					storage,
+					"avatar/" + Date.now() + "." + file.type.split("/")[1]
+				);
+				uploadBytes(storageRef, file).then((snapshot) => {
+					("Uploaded file!");
+					getDownloadURL(snapshot.ref).then(async (item) => {
+                        (item);
+                        updateFields.avatar = item;
+                        updateDb()
+					});
+				});
+        }else{
+            updateFields.avatar = "";
+            updateDb()
+        }
+      
+         async function updateDb (){
+            updateFields.title = title;
+            updateFields.bio = bio;
+            try {
+                await userSchema.findOneAndUpdate(
+                    { email: req.session.email },
+                    updateFields,
+                    { new: true } 
+                );
+                res.status(200).send("Profile updated successfully.");
+            } catch (error) {
+                console.error( error);
+            }
+        }
+	}
+
+}
+const isValidUrl = (str) => {
+	const pattern = new RegExp(
+		"^([a-zA-Z]+:\\/\\/)?" + // protocol
+			"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+			"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR IP (v4) address
+			"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+			"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+			"(\\#[-a-z\\d_]*)?$", // fragment locator
+		"i"
+	);
+	return pattern.test(str);
+};
+
+function base64ImageToBlob(str) {
+	// extract content type and base64 payload from original string
+	var pos = str.indexOf(";base64,");
+	var type = str.substring(5, pos);
+	var b64 = str.substr(pos + 8);
+
+	// decode base64
+	var imageContent = atob(b64);
+
+	// create an ArrayBuffer and a view (as unsigned 8-bit)
+	var buffer = new ArrayBuffer(imageContent.length);
+	var view = new Uint8Array(buffer);
+
+	// fill the view, using the decoded base64
+	for (var n = 0; n < imageContent.length; n++) {
+		view[n] = imageContent.charCodeAt(n);
+	}
+
+	// convert ArrayBuffer to Blob
+	var blob = new Blob([buffer], { type: type });
+
+	return blob;
 }

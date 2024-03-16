@@ -12,7 +12,6 @@ const Developer = () => {
     async function getDeveloper(){
       const {data} = await axios.get('/developer/'+publisher_id); 
       setDeveloperDetaisl(data)
-      console.log(data);
     }
     getDeveloper()
     
@@ -23,10 +22,10 @@ const Developer = () => {
         <div className='px-2 py-4 flex flex-col items-center  mx-4 rounded-sm space-y-3  my-3'>
                 <div> <img className='h-16' alt='github' src={github}></img></div>
                 <div className='flex flex-col items-center'>
-                    <h1>{developerDetails?.developer?.name}</h1>
-                       <p className='text-xs text-[#666666] '>{developerDetails?.developer?.title}</p>
+                    <h1 className='capitalize'>{developerDetails?.developer?.name}</h1>
+                       <p className='text-xs text-[#666666] capitalize '>{developerDetails?.developer?.title}</p>
                 </div>
-                 <div className='px-8 text-xs text-[#666666]'>
+                 <div className='px-8 text-xs text-[#666666] capitalize'>
                      <p>{developerDetails?.developer?.bio}</p>
                  </div>
         </div>

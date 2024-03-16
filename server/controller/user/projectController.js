@@ -67,7 +67,7 @@ const firebaseConfig = {
 				"screenshots/" + Date.now() + "." + blobfile.type.split("/")[1]
 			);
 			uploadBytes(storageRef, blobfile).then((snapshot) => {
-				console.log("uploaded");
+				("uploaded");
 				getDownloadURL(snapshot.ref).then((item) => {
 					screenshotsLinks.push(item);
 				});
@@ -79,7 +79,7 @@ const firebaseConfig = {
 			"thumbnail/" + Date.now() + "." + thumbnail.type.split("/")[1]
 		);
 		uploadBytes(storageRef, thumbnail).then((snapshot) => {
-			console.log("Uploaded file!");
+			("Uploaded file!");
 			getDownloadURL(snapshot.ref).then(async (item) => {
 				thumbnailLink = item;
 				const response = await openai.chat.completions.create({
@@ -138,7 +138,7 @@ const firebaseConfig = {
 			const data = await projectSchema.find().sort({ _id: -1 }).limit(2);
 			res.json(data);
 		} catch (error) {
-			console.log(error);
+			(error);
 		}
 	},
 	getPopularList: async (req, res) => {
@@ -146,7 +146,7 @@ const firebaseConfig = {
 			const data = await projectSchema.find().sort({views: -1 }).limit(2);
 			res.json(data);
 		} catch (error) {
-			console.log(error);
+			(error);
 		}
 	},
 	getCategoryList: async (req, res) => {
@@ -154,7 +154,7 @@ const firebaseConfig = {
 			const data = await categorySchema.find({status:"Listed"})
 			res.json(data);
 		} catch (error) {
-			console.log(error);
+			(error);
 		}
 	},
 	getTopDevelopers: async (req, res) => {
@@ -162,7 +162,7 @@ const firebaseConfig = {
 			const data = await userSchema.find();
 			res.json(data);
 		} catch (error) {
-			console.log(error);
+			(error);
 		}
 	},
 	getDescription:async (req,res) =>{
@@ -170,9 +170,9 @@ const firebaseConfig = {
 			const data = await projectSchema.findOne({project_id:req.params.id})
 			res.json(data)
 		}catch(error){
-			console.log(error);
+			(error);
 		}
-	}
+	},
     
     }
 

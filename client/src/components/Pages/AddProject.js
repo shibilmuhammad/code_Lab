@@ -65,7 +65,6 @@ const AddProject = () => {
 
 			reader.onload = () => {
 				if (reader.readyState === 2) {
-                    console.log(reader.result);
 					setScrnshot((oldImages) => [...oldImages, reader.result]);
 				}
 			};

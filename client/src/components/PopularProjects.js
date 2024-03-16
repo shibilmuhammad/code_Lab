@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 
 const PopularProjects = () => {
     const PopularProjects = useSelector((store)=>store?.project?.popularProjects)
-    console.log(PopularProjects);
     return (
         <div className='p-2 mt-3'>
               <div className='flex items-center justify-between px-2'>
