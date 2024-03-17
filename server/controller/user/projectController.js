@@ -121,7 +121,7 @@ const firebaseConfig = {
 					price: "Free",
 					keywords:
 						title.split(" ").join(",") +
-						" , " +
+						" , " +frameworks_used.join(',')+
 						response?.choices[0]?.message?.content,
 				});
 				newProject.save();
@@ -173,10 +173,133 @@ const firebaseConfig = {
 			(error);
 		}
 	},getEditProject: async (req,res) =>{
+		const publisher = await projectSchema.findOne(
+			{
+				publisher_id: req.session.publisher_id,
+				project_id : req.params.id
+			},
+
+			{ _id: 0, email: 0, password: 0, title: 0 }
+		);
+		if(!publisher ){
+			return res.json(
+				{
+					status : false
+				}
+			)
+		}
 		const project =  await projectSchema.findOne({project_id:req.params.id})
 		res.json({status:true,project:project})
 
+	},postEditproject: async (req, res) => {
+		const publisher = await projectSchema.findOne(
+			{
+				publisher_id: req.session.publisher_id,
+				project_id : req.body.projectId
+			},
+
+			{ _id: 0, email: 0, password: 0, title: 0 }
+		);
+		if(!publisher ){
+			return res.json(
+				{
+					status : false
+				}
+			)
+		}
+		const {
+			title,
+			category,
+			projectLink,
+			liveLink,
+			overview,
+			features,
+			framework,
+			database,
+			thumbnail: newThumbnail,
+			screenShot: newScreenShots
+		} = req.body;
+		const currentDate = new Date();
+		const day = currentDate.getDate();
+		const month = currentDate.getMonth() + 1; // Add 1 as months are zero-based
+		const year = currentDate.getFullYear();
+		const date2 = `${month}-${day}-${year}`;
+
+		const currentProject = await projectSchema.findOne({ project_id: req.body.projectId });
+		const currentThumbnailLink = currentProject.thumbnail;
+		const currentScreenshots = currentProject.screenshots;
+		let thumbnailLink = currentThumbnailLink;
+	
+		// Upload new thumbnail if it's not a valid URL and different from the current thumbnail
+		if (!isValidUrl(newThumbnail) && newThumbnail !== currentThumbnailLink) {
+			const thumbnailBlob = base64ImageToBlob(newThumbnail);
+			const storageRef = ref(storage, "thumbnails/" + Date.now() + "." + thumbnailBlob.type.split("/")[1]);
+			const thumbnailSnapshot = await uploadBytes(storageRef, thumbnailBlob);
+			thumbnailLink = await getDownloadURL(thumbnailSnapshot.ref);
+		}
+	
+		// Upload new screenshots if they are not valid URLs
+		const uploadScreenshotPromises = newScreenShots.map(async (newScreenShot) => {
+			if (!isValidUrl(newScreenShot)) {
+				const screenShotBlob = base64ImageToBlob(newScreenShot);
+				const storageRef = ref(storage, "screenshots/" + Date.now() + "." + screenShotBlob.type.split("/")[1]);
+				const screenshotSnapshot = await uploadBytes(storageRef, screenShotBlob);
+				return getDownloadURL(screenshotSnapshot.ref);
+			} else {
+				return newScreenShot;
+			}
+		});
+	
+		const updatedScreenShotLinks = await Promise.all(uploadScreenshotPromises);
+
+		// Prepare update fields
+		const updateFields = {};
+		if (title !== '') updateFields.title = title;
+		if (category !== '') updateFields.category = category;
+		if (projectLink !== '') updateFields.projectLink = projectLink;
+		if (liveLink !== '') updateFields.live_link = liveLink;
+		if (overview !== '') updateFields.overview = overview;
+		if (features !== '<p><br></p>') updateFields.features = features;
+		if (framework !== '') updateFields.frameworks_used = framework;
+		if (database !== '') updateFields.db_used = database;
+		updateFields.last_updated = date2;
+		if (thumbnailLink !== currentThumbnailLink) updateFields.thumbnail = thumbnailLink;
+		if (JSON.stringify(updatedScreenShotLinks) !== JSON.stringify(currentScreenshots)) updateFields.screenshots = updatedScreenShotLinks;
+		if(newScreenShots.length===0) updateFields.screenshots = currentScreenshots;
+		if(framework.length===0)updateFields.frameworks_used = currentProject.frameworks_used
+		const response = await openai.chat.completions.create({
+			model: "gpt-3.5-turbo",
+			messages: [
+				{
+					role: "system",
+					content:
+						"You will be provided with a block of text, and your task is to extract a list of keywords from it. it will be given as comma seperated values..example task,new,store",
+				},
+				{
+					role: "user",
+					content: overview,
+				},
+			],
+			temperature: 0.5,
+			max_tokens: 64,
+			top_p: 1,})
+			updateFields.keywords = title.split(" ").join(",") +
+			" , " +framework.join(',')+
+			response?.choices[0]?.message?.content
+			
+		try {
+			await projectSchema.findOneAndUpdate(
+				{ project_id: req.body.projectId },
+				updateFields,
+				{ new: true }
+			);
+			res.json({ status: true });
+		} catch (error) {
+			console.error(error);
+			res.status(500).json({ status: false, error: "Error updating project." });
+		}
 	}
+	
     
     }
 
@@ -203,3 +326,15 @@ function base64ImageToBlob(str) {
 
 	return blob;
 }
+const isValidUrl = (str) => {
+	const pattern = new RegExp(
+		"^([a-zA-Z]+:\\/\\/)?" + // protocol
+			"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+			"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR IP (v4) address
+			"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+			"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+			"(\\#[-a-z\\d_]*)?$", // fragment locator
+		"i"
+	);
+	return pattern.test(str);
+};

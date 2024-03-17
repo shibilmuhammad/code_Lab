@@ -1,7 +1,7 @@
 
 export const validateAddproject = (title,category,liveLink,overview,scrnshot,features,thumbline,framework,db,projectLink)=>{
     if(title.trim()==='') return 'Title can not be empty!!'
-    if(category.trim()==='') return 'Category can not be empty!!'
+    if(category==='choose') return 'Category can not be empty!!'
     if(liveLink){
         if (!isValidURL(liveLink)) return 'Invalid live link!!';
     }
@@ -11,7 +11,7 @@ export const validateAddproject = (title,category,liveLink,overview,scrnshot,fea
     if(!scrnshot) return "Screenshot required"
     if(features==='<p><br></p>' || features === null) return 'Featurese can not be empty!!'
     if(!thumbline) return "Thumbline is  required"
-    if(framework.trim()==='') return 'FrameWork can not be empty!!'
+    if(framework==='choose') return 'FrameWork can not be empty!!'
     return null
 }
 function isValidURL(url) {

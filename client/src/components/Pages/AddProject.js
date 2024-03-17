@@ -33,7 +33,7 @@ const AddProject = () => {
             axios.post('/addProject',{
                title : title.current.value,
                category: category.current.value,
-               liveLink: liveLink.current.vlaue,
+               liveLink: liveLink.current.value,
                overview: overview.current.value,
                 thumbnail:thumbnail,
                 features:features,
@@ -75,13 +75,7 @@ const AddProject = () => {
             ref.current.value = '';
         }
     };
-    const renderOptions = () => {
-        return categories.map((category, index) => (
-            <option key={index} value={category}>
-                {category}
-            </option>
-        ));
-    };
+ 
     const exampleOverview = "This project is a web application that allows users to manage their tasks effectively.";
     const exampleFeatures = "1. User authentication and authorization"
     const exampleFramework = "MongoDB, Express.js, React, Node.js";
@@ -107,9 +101,13 @@ const AddProject = () => {
                 <label className='text-[#333333] font-medium'>Category </label>
                 <div className='flex items-center border py-2 rounded-lg border-secondary-mainBorder px-2'>
                     <select ref={category} placeholder='Shibil muhammad' className='w-full outline-none' >
-                        <option >choose</option>
-                        {renderOptions()}
-                    </select>
+                    <option value={"choose"} selected disabled>Choose</option>
+                    {categories && categories.length > 0 && categories.map((category, index) => (
+                        <option key={index} value={category}>
+                            {category}
+                        </option>
+                    ))}
+                </select>
                 </div>
             </div>
           
@@ -140,7 +138,7 @@ const AddProject = () => {
                 <label className='text-[#333333] font-medium'>Screenshots </label>
                  <div className="grid grid-cols-3 gap-2  ">
                     <div className="">
-                        <input multiple  onChange={(e) => handlescreenshotChange(e)} type="file" id="scrnShot" hidden></input>
+                        <input multiple  onChange={(e) => handlescreenshotChange(e)} type="file" id="scrnShot" accept="image/*"  hidden></input>
                         <label htmlFor="scrnShot"  className='flex items-center justify-center h-24  border-dashed border py-2 rounded-lg border-secondary-mainBorder px-2'>
                              <img alt="upload" className="h-12 w-12 opacity-50"  src={upload}></img>
                
@@ -164,7 +162,7 @@ const AddProject = () => {
             </div>
             <div className='space-y-1'>
                 <label className='text-[#333333] font-medium'>Cover page thumbline </label>
-                <input  onChange={(e) => handleThumbnailChange(e)} type="file" id="thumline" hidden></input>
+                <input   onChange={(e) => handleThumbnailChange(e)} type="file" id="thumline" accept="image/*" hidden></input>
                 <label htmlFor="thumline" className='flex items-center h-36  justify-center w-full p-2 border border-dashed rounded-lg border-secondary-mainBorder px-2'>
                     {!thumbnail && <img alt="upload" className="h-12 w-12 opacity-50"  src={upload}></img>}
                     {thumbnail && <img  alt='upload' className="h-full w-full object-contain  " src={thumbnail}></img> }
@@ -198,6 +196,7 @@ const AddProject = () => {
              
                 <div className='flex items-center border py-2 rounded-lg border-secondary-mainBorder px-2'>
                     <select  ref={framework} className="w-full outline-none" onChange={frameworkHandle}>
+                        <option value={'choose'} disabled selected className="text-[#666666]">choose</option>
                         {frameworks.map((framework,index)=><option  key={index} value={framework.name}>{framework.name}</option>)}
                     </select>
                 </div>

@@ -23,7 +23,9 @@ import privacy from '../assets/Security Lock.png';
 import Logout from '../assets/Logout Rounded.png';
 import uploadicon from '../assets/Upload.png'
 import userIcon from '../assets/dev.png'
-export {projectDemo}
+import notfound from '../assets/404.png'
+import notfound2 from '../assets/Group.png'
+export {projectDemo,notfound,notfound2}
 export const LOGO  = LOGO1;
 export const FAV_ICON = favIcon;
 export const USER_ICON = maleUser;

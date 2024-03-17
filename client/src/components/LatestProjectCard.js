@@ -9,7 +9,7 @@ const LatestProjectCard = ({data}) => {
     <Link to={'/description/'+data.project_id}>
     <div className="flex w-full space-x-3 p-3 rounded-md border-primary- to-secondary-mainBorder border "> 
 
-  <div className="w-4/12 p-1">
+  <div className="w-4/12 h-24 p-1">
     <img  className="rounded-md w-full h-full object-cover" src={data?.thumbnail} alt="latest-project" />
   </div>
 

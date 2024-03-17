@@ -16,4 +16,5 @@ router.get('/profile',userController.getProfile)
 router.post('/editprofile',userController.editProfile)
 router.get('/myprojects',userController.getMyProjects)
 router.get('/editproject/:id',projectController.getEditProject)
+router.post('/editproject',projectController.postEditproject)
 module.exports = router

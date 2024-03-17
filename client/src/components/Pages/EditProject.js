@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import TopNavigation from '../TopNavigation'
 import { useNavigate, useParams } from 'react-router-dom'
-import { validateAddproject } from '../../utils/validateForm'
+
 import axios from 'axios'
 import { closeIcon, upload } from '../../utils/constants'
 import { categories } from '../../utils/categories'
 import ReactQuill from 'react-quill'
 import { frameworks } from '../../utils/frameWorks'
+import NotFound from '../NotFound'
 
 const EditProject = () => {
     const navigate = useNavigate()
@@ -23,31 +24,32 @@ const EditProject = () => {
     const [scrnshot, setScrnshot] = useState(null);
     const [formError, setFormError] = useState(null);
     const [frameWorksList,setFrameWorksList] = useState([])
-    
+    const [notFound,setNotfound] = useState(false)
     const [currentData,setCurrentData] = useState(null)
     const formSubmit =(e)=>{
 
         e.preventDefault()
-        const validationResult = validateAddproject(title.current.value,category.current.value,liveLink.current.value,overview.current.value,scrnshot,features,thumbnail,framework.current.value,database.current.value,projectLink.current.value)
-        setFormError(validationResult)
-        if(!validationResult){
-            axios.post('/addProject',{
+
+            const {data} = axios.post('/editproject',{
                title : title.current.value,
                category: category.current.value,
-               liveLink: liveLink.current.vlaue,
+               liveLink: liveLink.current.value,
                overview: overview.current.value,
                 thumbnail:thumbnail,
                 features:features,
                 framework:frameWorksList,
                 database:database.current.value,
                 screenShot:scrnshot,
-                projectLink:projectLink.current.value
+                projectLink:projectLink.current.value,
+                projectId :currentData?.project_id
 
             }).then(({data})=>{
-                if(data.status==='success')navigate('/')
+                if(!data.status) setNotfound(true)
+                if(data.status===true)navigate('/')
+
             })
             }
-        } 
+
         const clearInput = (ref) => {
             if (ref.current) {
                 ref.current.value = '';
@@ -71,7 +73,6 @@ const EditProject = () => {
         };
         const handlescreenshotChange = (e) => {
             const files = Array.from(e.target.files);
-            setScrnshot([]);
             files.forEach((file) => {
                 const reader = new FileReader();
     
@@ -96,18 +97,32 @@ const EditProject = () => {
     useEffect(()=>{
         async function getProjectDetails(){
             const {data} = await axios.get('/editproject/'+id)
+            if(!data.status) return setNotfound(true)
             title.current.value = data.project.title
             category.current.value = data.project.category
-
+            projectLink.current.value = data.project.project_link
+            liveLink.current.value = data.project?.live_link || ""
+            overview.current.value = data.project.overview
+            setScrnshot(data.project.screenshots)
              setCurrentData(data?.project)
+             setFeatures(data.project.features)
+             setThumbnail(data.project.thumbnail)
+             setFrameWorksList(data.project.frameworks_used)
+             database.current.value = data.project?.db_used  || ""
         }
         getProjectDetails()
     },[])
-    console.log(currentData);
+    const removeScreenshot = (index)=>{
+        scrnshot.splice(index,1);
+        setScrnshot([...scrnshot])
+    }
     return (
+     
         <div className="pb-10">
+           
          <TopNavigation title={'Modify project'} />
-         <form className='px-4 mt-5 space-y-3' onSubmit={formSubmit}  encType="multipart/form-data">
+         {notFound && <NotFound />}
+        {!notFound && ( <form className='px-4 mt-5 space-y-3' onSubmit={formSubmit}  encType="multipart/form-data">
                 <div className='space-y-1 '>
                     <label className='text-[#333333] font-medium'>Title </label>
                     <div className='flex items-center border py-2 rounded-lg border-secondary-mainBorder px-2'>
@@ -158,10 +173,14 @@ const EditProject = () => {
                    
                             </label>
                         </div>
-                        {scrnshot?.map((item)=>{
+                        {scrnshot?.map((item,index)=>{
     
-                            return (<div className="border p-3 h-24 flex justify-center items-center"> 
+                            return (<div className="border p-3 h-24 flex justify-center items-center relative "> 
                                 <img alt="upload" className="h-full object-contain"  src={item}></img>
+                                <button onClick={()=>{removeScreenshot(index)}} className='absolute right-0 top-[-2px] bg-slate-50  rounded-full h-7 w-7'>
+                                <i class="bi bi-x "></i> 
+                                </button>
+                             
                             </div>)
                         })}
                     </div>
@@ -209,9 +228,10 @@ const EditProject = () => {
                     </div>
                  
                     <div className='flex items-center border py-2 rounded-lg border-secondary-mainBorder px-2'>
-                        <select  ref={framework} className="w-full outline-none" onChange={frameworkHandle}>
-                            {frameworks.map((framework,index)=><option  key={index} value={framework.name}>{framework.name}</option>)}
-                        </select>
+                             <select  ref={framework} className="w-full outline-none" onChange={frameworkHandle}>
+                        <option value={'choose'} disabled selected className="text-[#666666]">choose</option>
+                        {frameworks.map((framework,index)=><option  key={index} value={framework.name}>{framework.name}</option>)}
+                    </select>
                     </div>
                 </div>
                 <div className='space-y-1'>
@@ -225,6 +245,7 @@ const EditProject = () => {
                     <button className='bg-teritary-main mt-6 w-full rounded-md py-2 text-white font-medium'>Save </button>
                 </div>
       </form>
+        )}
     
         </div>
       )
