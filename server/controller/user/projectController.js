@@ -121,7 +121,7 @@ const firebaseConfig = {
 					price: "Free",
 					keywords:
 						title.split(" ").join(",") +
-						" , " +frameworks_used.join(',')+
+						" , " +framework.join(',')+
 						response?.choices[0]?.message?.content,
 				});
 				newProject.save();
@@ -149,14 +149,6 @@ const firebaseConfig = {
 			(error);
 		}
 	},
-	getCategoryList: async (req, res) => {
-		try {
-			const data = await categorySchema.find({status:"Listed"})
-			res.json(data);
-		} catch (error) {
-			(error);
-		}
-	},
 	getTopDevelopers: async (req, res) => {
 		try {
 			const data = await userSchema.find();
@@ -168,6 +160,17 @@ const firebaseConfig = {
 	getDescription:async (req,res) =>{
 		try{
 			const data = await projectSchema.findOne({project_id:req.params.id})
+			const views = data?.views + 1;
+			if (!req.session.viewed_posts) {
+				req.session.viewed_posts = {};
+			}
+			if (!req.session.viewed_posts[req.params.id]) {
+				req.session.viewed_posts[req.params.id] = 1;
+				const update = await projectSchema.findOneAndUpdate(
+					{ project_id: req.params.id },
+					{ views: views }
+				);
+			}
 			res.json(data)
 		}catch(error){
 			(error);
@@ -298,6 +301,11 @@ const firebaseConfig = {
 			console.error(error);
 			res.status(500).json({ status: false, error: "Error updating project." });
 		}
+	},getAllCategories: async(req,res)=>{
+		console.log('hi');
+		const uniqueFrameworks = await projectSchema.distinct('frameworks_used');
+		console.log('hi');
+		console.log(uniqueFrameworks);
 	}
 	
     
