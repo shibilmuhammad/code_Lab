@@ -172,7 +172,11 @@ const firebaseConfig = {
 		}catch(error){
 			(error);
 		}
-	},
+	},getEditProject: async (req,res) =>{
+		const project =  await projectSchema.findOne({project_id:req.params.id})
+		res.json({status:true,project:project})
+
+	}
     
     }
 

@@ -19,6 +19,7 @@ import AddProject from './components/Pages/AddProject';
 import ProjectList from './components/Pages/ProjectList';
 import { Provider } from 'react-redux';
 import appStore from './utils/appStore';
+import EditProject from './components/Pages/EditProject';
 
 function App() {
   const appRouter =  createBrowserRouter([
@@ -85,6 +86,10 @@ function App() {
     {
       path : '/projects',
       element:< ProjectList />
+    },
+    {
+      path : '/editproject/:id',
+      element:< EditProject />
     }
   ])
   return (

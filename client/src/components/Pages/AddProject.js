@@ -26,7 +26,6 @@ const AddProject = () => {
     const [frameWorksList,setFrameWorksList] = useState([])
     
     const formSubmit =(e)=>{
-        alert(features)
         e.preventDefault()
         const validationResult = validateAddproject(title.current.value,category.current.value,liveLink.current.value,overview.current.value,scrnshot,features,thumbnail,framework.current.value,database.current.value,projectLink.current.value)
         setFormError(validationResult)
@@ -108,6 +107,7 @@ const AddProject = () => {
                 <label className='text-[#333333] font-medium'>Category </label>
                 <div className='flex items-center border py-2 rounded-lg border-secondary-mainBorder px-2'>
                     <select ref={category} placeholder='Shibil muhammad' className='w-full outline-none' >
+                        <option >choose</option>
                         {renderOptions()}
                     </select>
                 </div>
