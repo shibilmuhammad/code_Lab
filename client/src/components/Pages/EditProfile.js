@@ -109,6 +109,7 @@ const EditProfile = () => {
             </div>
            
         </form>
+   
     </div>
   )
 }

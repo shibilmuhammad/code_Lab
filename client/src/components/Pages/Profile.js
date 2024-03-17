@@ -33,12 +33,14 @@ const Profile = () => {
           </div>
 
           <div className='bg-white rounded-md drop-shadow-lg mt-5 mx-10 px-3 py-5 space-y-4'>
+            <Link to={'/myprojects'}>
             <div className='flex items-center juc space-x-3'>
                 <div className=' p-2 rounded-full bg-[#EEEAFF] '>
                     <img alt='Projects' className='h-5 w-5' src={projectsIcon}></img>
                 </div>
                 <span className=''>My projects </span>
             </div>
+            </Link>
             <div className='flex items-center juc space-x-3'>
                 <div className=' p-2 rounded-full bg-[#EEEAFF] '>
                     <img alt='Projects' className='h-5 w-5' src={contactIcon}></img>

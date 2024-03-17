@@ -8,6 +8,7 @@ import PopularProjects from '../PopularProjects'
 import { useDispatch } from "react-redux";
 import { addCategory, addLatest, addPopular, addTopDevelopers } from '../../utils/ProjectSlice'
 import axios from 'axios'
+import BottomAddproject from '../BottomAddproject'
 const Home = () => {
   const dispatch = useDispatch();
 	useEffect(() => {
@@ -32,6 +33,7 @@ const Home = () => {
         <LatestProjects />
         <ProjectByDomain />
         <PopularProjects />
+		<BottomAddproject/>
 
     </div>
   )
