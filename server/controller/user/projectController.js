@@ -122,7 +122,7 @@ const { set } = require('mongoose');
 					price: "Free",
 					keywords:
 						title.split(" ").join(",") +
-						" , " +framework.join(',')+
+						" , " +framework.join(',')+" "+category+" "+
 						response?.choices[0]?.message?.content,
 				});
 				newProject.save();
@@ -225,7 +225,7 @@ const { set } = require('mongoose');
 		} = req.body;
 		const currentDate = new Date();
 		const day = currentDate.getDate();
-		const month = currentDate.getMonth() + 1; // Add 1 as months are zero-based
+		const month = currentDate.getMonth() + 1; 
 		const year = currentDate.getFullYear();
 		const date2 = `${month}-${day}-${year}`;
 
@@ -234,7 +234,6 @@ const { set } = require('mongoose');
 		const currentScreenshots = currentProject.screenshots;
 		let thumbnailLink = currentThumbnailLink;
 	
-		// Upload new thumbnail if it's not a valid URL and different from the current thumbnail
 		if (!isValidUrl(newThumbnail) && newThumbnail !== currentThumbnailLink) {
 			const thumbnailBlob = base64ImageToBlob(newThumbnail);
 			const storageRef = ref(storage, "thumbnails/" + Date.now() + "." + thumbnailBlob.type.split("/")[1]);
@@ -242,7 +241,6 @@ const { set } = require('mongoose');
 			thumbnailLink = await getDownloadURL(thumbnailSnapshot.ref);
 		}
 	
-		// Upload new screenshots if they are not valid URLs
 		const uploadScreenshotPromises = newScreenShots.map(async (newScreenShot) => {
 			if (!isValidUrl(newScreenShot)) {
 				const screenShotBlob = base64ImageToBlob(newScreenShot);
@@ -256,7 +254,6 @@ const { set } = require('mongoose');
 	
 		const updatedScreenShotLinks = await Promise.all(uploadScreenshotPromises);
 
-		// Prepare update fields
 		const updateFields = {};
 		if (title !== '') updateFields.title = title;
 		if (category !== '') updateFields.category = category;
@@ -288,7 +285,7 @@ const { set } = require('mongoose');
 			max_tokens: 64,
 			top_p: 1,})
 			updateFields.keywords = title.split(" ").join(",") +
-			" , " +framework.join(',')+
+			" , " +framework.join(',')+" "+category+" "+
 			response?.choices[0]?.message?.content
 			
 		try {
@@ -313,6 +310,16 @@ const { set } = require('mongoose');
 			res.json({status:true,projects:projects}); 
 		} catch (error) {
 			console.error(error);
+		}
+	},getSearch : async (req,res) =>{
+		try {
+			const {searchValue} = req.params;
+			const data = await projectSchema.find({
+				keywords: { $regex: new RegExp(searchValue, "i") },
+			});
+			res.json(data);
+		} catch (error) {
+			console.log(error);
 		}
 	}
 	

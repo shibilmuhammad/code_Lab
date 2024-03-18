@@ -25,7 +25,8 @@ import uploadicon from '../assets/Upload.png'
 import userIcon from '../assets/dev.png'
 import notfound from '../assets/404.png'
 import notfound2 from '../assets/Group.png'
-export {projectDemo,notfound,notfound2}
+import noresult from '../assets/no_results.png'
+export {projectDemo,notfound,notfound2,noresult}
 export const LOGO  = LOGO1;
 export const FAV_ICON = favIcon;
 export const USER_ICON = maleUser;

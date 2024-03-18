@@ -7,7 +7,7 @@ const LatestProjectCard = ({data}) => {
 
   return (
     <Link to={'/description/'+data.project_id}>
-    <div className="flex w-full space-x-3 p-3 rounded-md border-primary- to-secondary-mainBorder border "> 
+    <div className="flex w-full space-x-3 p-3 rounded-md border-primary- to-secondary-mainBorder border mb-2 "> 
 
   <div className="w-4/12 h-24 p-1">
     <img  className="rounded-md w-full h-full object-cover" src={data?.thumbnail} alt="latest-project" />
@@ -15,8 +15,8 @@ const LatestProjectCard = ({data}) => {
 
   <div className="w-6/12 ">
     <div className="space-y-2">
-      <h1 className="text-xs text-teritary-main font-medium uppercase tracking-wider">{data?.category}</h1>
-      <p className="text-xs text-[#333333]">{data?.title}</p>
+      <h1 className="text-xs text-teritary-main font-medium uppercase tracking-wider">{data?.title}</h1>
+      <p className="text-xs text-[#333333]">{data?.category}</p>
       <p className="text-xs text-[#666666] capitalize">{data?.publisher}</p>
     </div>
 

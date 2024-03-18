@@ -9,9 +9,9 @@ const RelatedProjects = ({data,domainName}) => {
     <div className='bg-white mx-4 pb-4 rounded-md shadow-lg mb-4'>
           <div className='px-4 rounded-xl relative '>
                 <img className='h-52 rounded-md w-full object-cover' alt='bg-img' src={data?.thumbnail}></img>
-                <div className='
+                <div className='absolute  top-1  flex flex-wrap gap-2
                 '>
-                        <span className='px-2 text-sm rounded-md top-1 bg-black bg-opacity-50 text-white absolute max-w-16 truncate'>{domainName}</span>
+                        {/* <span className='px-2 text-sm rounded-md top-1 bg-black bg-opacity-50 text-white absolute max-w-16 truncate'>{domainName}</span>
                       
                         {data?.frameworks_used[0] !== domainName ? (
               <span className='ml-[68px] px-2 text-sm rounded-md top-1 bg-black bg-opacity-50 text-white absolute max-w-16 truncate'>
@@ -21,7 +21,9 @@ const RelatedProjects = ({data,domainName}) => {
                     <span className='ml-[68px] px-2 text-sm rounded-md top-1 bg-black bg-opacity-50 text-white absolute max-w-16 truncate'>
                         {data?.frameworks_used[1]}
                     </span>
-                )}
+                )} */}
+
+                {data?.frameworks_used.map((item)=><span className='px-2 text-sm rounded-md bg-black bg-opacity-50 text-white  max-w-16 truncate '>{item}</span>)}
                 </div>
                 <div className='mt-3 bg-white'>
                     <h1 className='text-sm capitalize text-[#333333]'> {data?.title}</h1>

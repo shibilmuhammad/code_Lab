@@ -8,6 +8,7 @@ import { categories } from '../../utils/categories'
 import ReactQuill from 'react-quill'
 import { frameworks } from '../../utils/frameWorks'
 import NotFound from '../NotFound'
+import FormLoading from '../skelton/FormLoad'
 
 const EditProject = () => {
     const navigate = useNavigate()
@@ -26,10 +27,11 @@ const EditProject = () => {
     const [frameWorksList,setFrameWorksList] = useState([])
     const [notFound,setNotfound] = useState(false)
     const [currentData,setCurrentData] = useState(null)
+    const [loading,setLoading] = useState(false)
     const formSubmit =(e)=>{
 
         e.preventDefault()
-
+        setLoading(true)
             const {data} = axios.post('/editproject',{
                title : title.current.value,
                category: category.current.value,
@@ -44,8 +46,9 @@ const EditProject = () => {
                 projectId :currentData?.project_id
 
             }).then(({data})=>{
+                setLoading(false)
                 if(!data.status) setNotfound(true)
-                if(data.status===true)navigate('/')
+                if(data.status===true)navigate('/myprojects')
 
             })
             }
@@ -119,7 +122,7 @@ const EditProject = () => {
     return (
      
         <div className="pb-10">
-           
+           {loading && <FormLoading />}
          <TopNavigation title={'Modify project'} />
          {notFound && <NotFound />}
         {!notFound && ( <form className='px-4 mt-5 space-y-3' onSubmit={formSubmit}  encType="multipart/form-data">

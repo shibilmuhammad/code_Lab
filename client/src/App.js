@@ -21,6 +21,7 @@ import { Provider } from 'react-redux';
 import appStore from './utils/appStore';
 import EditProject from './components/Pages/EditProject';
 import ProjectByDomain from './components/Pages/ProjectsByDomain';
+import SearchPage from './components/Pages/SearchPage';
 
 function App() {
   const appRouter =  createBrowserRouter([
@@ -95,6 +96,10 @@ function App() {
     {
       path : '/domain/:domainName',
       element:< ProjectByDomain />
+    },
+    {
+      path: '/search/:searchValue',
+      element: <SearchPage />
     }
   ])
   return (

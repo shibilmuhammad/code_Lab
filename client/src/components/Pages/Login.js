@@ -11,7 +11,7 @@ const Login = () => {
     const [validationError,setValidationError] = useState(null)
     const  clearInput = (ref)=>{
         if(ref){
-          ref.current.value = ''
+          ref.current.value = ''  
         }
       }
       const validateForm = (email,password)=>{
