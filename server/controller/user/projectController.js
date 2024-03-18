@@ -26,6 +26,7 @@ const firebaseConfig = {
         uploadBytes,
         getDownloadURL,
     } = require("firebase/storage");
+const { set } = require('mongoose');
 
     const storage = getStorage()
     require("dotenv").config();
@@ -302,10 +303,17 @@ const firebaseConfig = {
 			res.status(500).json({ status: false, error: "Error updating project." });
 		}
 	},getAllCategories: async(req,res)=>{
-		console.log('hi');
-		const uniqueFrameworks = await projectSchema.distinct('frameworks_used');
-		console.log('hi');
-		console.log(uniqueFrameworks);
+		const stacks_used = Array.from(new Set((await projectSchema.find()).map((item)=>item.frameworks_used).flat()))
+		res.json(stacks_used)
+
+	},getProjectsByDomain : async (req,res)=>{
+		try {
+			const domainName = req.params.domainName;
+			const projects = await projectSchema.find({ frameworks_used: domainName })
+			res.json({status:true,projects:projects}); 
+		} catch (error) {
+			console.error(error);
+		}
 	}
 	
     

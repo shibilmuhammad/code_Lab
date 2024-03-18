@@ -20,7 +20,7 @@ const Developer = () => {
     <div>
         <TopNavigation title={'Developer name '} />
         <div className='px-2 py-4 flex flex-col items-center  mx-4 rounded-sm space-y-3  my-3'>
-                <div> <img className='h-16' alt='github' src={github}></img></div>
+                <div className='border border-teritary-main h-16 w-16 rounded-full '> <img className='h-16 w-16 rounded-full p-1' alt='github' src={developerDetails?.developer?.avatar || github}></img></div>
                 <div className='flex flex-col items-center'>
                     <h1 className='capitalize'>{developerDetails?.developer?.name}</h1>
                        <p className='text-xs text-[#666666] capitalize '>{developerDetails?.developer?.title}</p>

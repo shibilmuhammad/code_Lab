@@ -9,6 +9,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'
 import {useNavigate} from 'react-router-dom'
 import { frameworks } from "../../utils/frameWorks"
+import FormLoading from "../skelton/FormLoad"
 
 const AddProject = () => {
     const navigate = useNavigate()
@@ -24,12 +25,14 @@ const AddProject = () => {
     const [scrnshot, setScrnshot] = useState(null);
     const [formError, setFormError] = useState(null);
     const [frameWorksList,setFrameWorksList] = useState([])
-    
+    const[loading ,setLoading] = useState(false)
     const formSubmit =(e)=>{
         e.preventDefault()
         const validationResult = validateAddproject(title.current.value,category.current.value,liveLink.current.value,overview.current.value,scrnshot,features,thumbnail,framework.current.value,database.current.value,projectLink.current.value)
-        setFormError(validationResult)
+        setFormError(validationResult) 
+
         if(!validationResult){
+            setLoading(true)
             axios.post('/addProject',{
                title : title.current.value,
                category: category.current.value,
@@ -43,7 +46,10 @@ const AddProject = () => {
                 projectLink:projectLink.current.value
 
             }).then(({data})=>{
-                if(data.status==='success')navigate('/')
+                if(data.status==='success'){
+                    setLoading(false)
+                    navigate('/')
+                }
             })
         }
     }   
@@ -87,6 +93,7 @@ const AddProject = () => {
     }
   return (
     <div className="pb-10">
+        {loading && <FormLoading />}
      <TopNavigation title={'Add project'} />
      <form className='px-4 mt-5 space-y-3' onSubmit={formSubmit}  encType="multipart/form-data">
             <div className='space-y-1 '>

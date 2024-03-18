@@ -2,17 +2,23 @@ import React, { useEffect, useState } from 'react'
 import TopNavigation from '../TopNavigation'
 import {  desktop, github, projectDemo, screenshot, time } from '../../utils/constants'
 import RelatedProjects from '../RelatedProjects'
-import { useParams } from 'react-router-dom'
+import {  Link, useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { calcDate } from '../../utils/dateDifference'
 import { formatedDate } from '../../utils/formateDate'
+import ScreenshotsCarousel from '../ScreenshotCarrousel'
+import DownloadCard from '../DownloadCard'
 
 const Description = () => {
+    const navigate = useNavigate()
     const {id} = useParams()
-    const [Description,setDescription] = useState(null)
+    const [Description,setDescription] = useState(null);
+    const [ssvisible,setSSVisible] = useState(false)
     useEffect(()=>{
+        window.scroll(0,0)
         async function getDescription(){
             const {data} = await axios.get('/description/'+id)
+
             setDescription(data)
         }
         getDescription()
@@ -21,7 +27,12 @@ const Description = () => {
 
   return (
     <div  >
-        <TopNavigation title={'Developer Name'} bg={'white'} />
+        {ssvisible && (
+        <ScreenshotsCarousel
+        screenshots={Description?.screenshots}
+        setSSVisible={setSSVisible}/>
+        )}
+        <TopNavigation title={Description?.publisher} bg={'white'} />
         <div className='bg-primary-main'>
             <div className='flex justify-between items-center p-4'>
                 <div className='w-8/12'>
@@ -42,11 +53,14 @@ const Description = () => {
                 <img className='h-52 w-full object-cover' alt='bg-img' src={Description?.thumbnail}></img>
             </div>
             <div className='w-full flex mt-5 px-2 '>
-                <button className='w-1/2 flex items-center justify-center space-x-3 text-white font-medium py-1 rounded-lg mx-3  bg-teritary-main'>
-                        <img alt='moniter' className='h-5' src={desktop}></img>
-                        <span>Live Demo</span>
-                </button>
-                <button className='w-1/2 flex items-center justify-center space-x-3 text-white font-medium py-1 rounded-lg mx-3 bg-secondary-bg'>
+               
+                    <a href={Description?.live_link} className='w-1/2 flex items-center justify-center space-x-3 text-white font-medium py-1 rounded-lg mx-3  bg-teritary-main'>
+                            <img alt='moniter' className='h-5' src={desktop}></img>
+                            <span>Live Demo</span>
+                    </a>
+            
+          
+                <button onClick={()=>{setSSVisible(true)}} className='w-1/2 flex items-center justify-center space-x-3 text-white font-medium py-1 rounded-lg mx-3 bg-secondary-bg'>
                         <img alt='moniter' className='h-5' src={screenshot}></img>
                         <span>Screenshots</span>
                 </button>
@@ -101,15 +115,23 @@ const Description = () => {
                        <p className='text-xs text-[#666666] '>Web Developer</p>
                 </div>
               
-               <button className='w-1/2 flex items-center justify-center space-x-3 text-white font-medium py-1 rounded-lg mx-3  bg-teritary-main'>
+
+               <button onClick={()=>navigate('/developer/'+Description?.publisher_id)} className='w-1/2 flex items-center justify-center  space-x-3 text-white font-medium py-1 rounded-lg mx-3  bg-teritary-main'>
                         <img alt='moniter' className='h-5' src={desktop}></img>
                         <span>View Profile </span>
                 </button>
+
             </div>
             <div className='px-4'>
                 Related Projects
             </div>
             <RelatedProjects />
+            {!ssvisible && (
+				<DownloadCard
+					id={Description?.project_id}
+					url={Description?.project_link}
+				/>
+			)}
         </div>
        
     </div>

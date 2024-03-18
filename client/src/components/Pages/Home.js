@@ -13,15 +13,15 @@ const Home = () => {
   const dispatch = useDispatch();
 	useEffect(() => {
 		async function call() {
-  
+			console.log('hi');
 			const list = await axios.get("/getlatest");
 			dispatch(addLatest(list?.data));
 			const topDevelopers = await axios.get("/getdevelopers");
 			dispatch(addTopDevelopers(topDevelopers?.data));
 			const popular = await axios.get("/getpopular");
 			dispatch(addPopular(popular?.data));
-			// const categories = await axios.get("/getallcategories");
-			// dispatch(addCategory(categories?.data));
+			const {data} = await axios.get("/getallcategories");
+			dispatch(addCategory(data));
 		}
 		call();
 	}, []);
