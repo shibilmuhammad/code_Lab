@@ -5,17 +5,26 @@ import LatestProjectCard from '../LatestProjectCard'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { frameworks } from '../../utils/frameWorks'
+import ErrorPage from './ErrorPage'
 const Developer = () => {
   const {publisher_id} = useParams();
   const[developerDetails,setDeveloperDetaisl]= useState(null)
+  const[error,setError] =useState(null)
   useEffect(()=>{
-    async function getDeveloper(){
-      const {data} = await axios.get('/developer/'+publisher_id); 
-      setDeveloperDetaisl(data)
+    try{
+      async function getDeveloper(){
+        const {data} = await axios.get('/developer/'+publisher_id); 
+        setDeveloperDetaisl(data)
+      }
+      getDeveloper()
+    }catch(err){  
+      setError(err)
     }
-    getDeveloper()
+   
     
   },[])
+  console.log(error);
+  if(error) return <ErrorPage />
   return (
     <div>
         <TopNavigation title={'Developer name '} />
