@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux"
 import { Show, downloads, projectDemo, time } from "../utils/constants"
 import { calcDate } from "../utils/dateDifference"
 import {Link, useNavigate} from 'react-router-dom'
+import { removeItem } from "../utils/favoriteSlice"
 
 const LatestProjectCard = ({data}) => {
 
@@ -45,6 +46,8 @@ const LatestProjectCard = ({data}) => {
   )
 }
 export default LatestProjectCard
+
+
 export const MyprojectCard = (Card) => {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
@@ -66,6 +69,28 @@ export const MyprojectCard = (Card) => {
 				<button className={props?.data?.status === 'Pending'  ? "bg-yellow-600 absolute top-0 left-0 flex items-center gap-2 p-1 px-2 rounded-br-xl " : props?.data?.status === 'Rejected' ? "bg-red-500 absolute top-0 left-0 flex items-center gap-2 p-1 px-2 rounded-br-xl" : "bg-green-500 absolute top-0 left-0 flex items-center gap-2 p-1 px-2 rounded-br-xl"}>
 					
 					<span className="text-xs text-white">{props?.data?.status}</span>
+				</button>
+				<Card {...props} />
+			</div>
+		);
+	};
+};
+
+export const ProjectCardSecRemove = (Card) => {
+	const dispatch = useDispatch();
+	return (props) => {
+    console.log('helloo');
+    console.log(props?.data);
+		const onClickHandler = (id) => {
+			dispatch(removeItem(id));
+		};
+		return (
+			<div className="relative">
+				<button
+					onClick={() => onClickHandler(props?.data?.project_id)}
+					className="absolute top-0 right-0 flex items-center gap-2 p-1 bg-gray-100 px-2 rounded-bl-xl">
+					<i class="bi bi-trash3-fill text-gray-400 text-xs"></i>
+					<span className="text-xs text-gray-400">Remove</span>
 				</button>
 				<Card {...props} />
 			</div>

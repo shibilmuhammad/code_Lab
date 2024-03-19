@@ -100,6 +100,10 @@ function App() {
     {
       path: '/search/:searchValue',
       element: <SearchPage />
+    },
+    {
+      path: '/favourite',
+      element: <Favorites />
     }
   ])
   return (

@@ -10,7 +10,7 @@ const Header = () => {
         <p>CodeLab</p>
       </div>
       <div className='flex space-x-3'>
-        <img  className='w-8' alt='FAV-ICON'  src={FAV_ICON}></img>
+        <Link to={'/favourite'} > <img  className='w-8' alt='FAV-ICON'  src={FAV_ICON}></img></Link> 
        <Link to={'/profile'}> <img  className='w-8' alt='USER-ICON'  src={USER_ICON}></img></Link>
       </div>
       

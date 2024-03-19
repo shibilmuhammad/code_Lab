@@ -108,7 +108,7 @@ const Description = () => {
                 </div>
             </div>
 
-            <div className='px-2 py-4 flex flex-col items-center  mx-4 rounded-sm space-y-3 bg-secondary-mainBorder my-3'>
+            <div className='px-2 py-4 flex flex-col items-center  mx-4 rounded-sm space-y-3 bg-secondary-mainBorder my-3 '>
                 <div> <img className='h-16' alt='github' src={github}></img></div>
                 <div className='flex flex-col items-center'>
                     <h1 className='capitalize'>{Description?.publisher}</h1>
