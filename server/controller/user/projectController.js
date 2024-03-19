@@ -321,6 +321,10 @@ const { set } = require('mongoose');
 		} catch (error) {
 			console.log(error);
 		}
+	},getFavorites : async (req,res) => {
+		console.log(req.body);
+		const favorites = await projectSchema.find({project_id:req.body.id})
+		res.json({status:true,data:favorites})
 	}
 	
     

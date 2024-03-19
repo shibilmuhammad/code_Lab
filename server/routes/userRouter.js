@@ -18,6 +18,7 @@ router.get('/myprojects',userController.getMyProjects)
 router.get('/editproject/:id',projectController.getEditProject)
 router.post('/editproject',projectController.postEditproject);
 router.get('/getprojectsbydomain/:domainName',projectController.getProjectsByDomain);
-router.get('/search/:searchValue',projectController.getSearch)
+router.get('/search/:searchValue',projectController.getSearch);
+router.post('/getfavorite',projectController.getFavorites)
 
 module.exports = router
