@@ -33,106 +33,102 @@ const { set } = require('mongoose');
 
    module.exports = {
     
-    addProject:async (req,res)=>{
-        const currentDate = new Date();
+	addProject: async (req, res) => {
+		const currentDate = new Date();
 		const day = currentDate.getDate();
 		const month = currentDate.getMonth() + 1; // Add 1 as months are zero-based
 		const year = currentDate.getFullYear();
 		const date2 = `${month}-${day}-${year}`;
-        let lastid;
+		let lastid;
 		const id = await projectSchema.find().sort({ _id: -1 }).limit(1);
 		if (id.length > 0) {
 			lastid = id[0].project_id;
 		} else {
 			lastid = 0;
 		}
-        const screenShotList = req.body.screenShot;
-        const thumbnail = base64ImageToBlob(req.body.thumbnail);
+		const screenShotList = req.body.screenShot;
+		const thumbnail = base64ImageToBlob(req.body.thumbnail);
 		var screenshotsLinks = [];
 		var thumbnailLink = "";
 		const {
 			title,
 			category,
-            projectLink,
+			projectLink,
 			liveLink,
 			overview,
 			features,
-            framework,
-            database
+			framework,
+			database
 		} = req.body;
-        //upload screen shots and get link
-        screenShotList.map((item) => {
-			const blobfile= base64ImageToBlob(item);
+	
+		//upload screen shots and get link
+		for (const item of screenShotList) {
+			const blobfile = base64ImageToBlob(item);
 			const storageRef = ref(
 				storage,
 				"screenshots/" + Date.now() + "." + blobfile.type.split("/")[1]
 			);
-			uploadBytes(storageRef, blobfile).then((snapshot) => {
-				("uploaded");
-				getDownloadURL(snapshot.ref).then((item) => {
-					screenshotsLinks.push(item);
-				});
-			});
-		});
-          //upload thumbnail and get link
-          const storageRef = ref(
+			const snapshot = await uploadBytes(storageRef, blobfile);
+			console.log("uploaded");
+			const downloadUrl = await getDownloadURL(snapshot.ref);
+			screenshotsLinks.push(downloadUrl);
+		}
+	
+		//upload thumbnail and get link
+		const storageRefThumbnail = ref(
 			storage,
 			"thumbnail/" + Date.now() + "." + thumbnail.type.split("/")[1]
 		);
-		uploadBytes(storageRef, thumbnail).then((snapshot) => {
-			("Uploaded file!");
-			getDownloadURL(snapshot.ref).then(async (item) => {
-				thumbnailLink = item;
-				const response = await openai.chat.completions.create({
-					model: "gpt-3.5-turbo",
-					messages: [
-						{
-							role: "system",
-							content:
-								"You will be provided with a block of text, and your task is to extract a list of keywords from it. it will be given as comma seperated values..example task,new,store",
-						},
-						{
-							role: "user",
-							content: overview,
-						},
-					],
-					temperature: 0.5,
-					max_tokens: 64,
-					top_p: 1,
-				});
-				const newProject = new projectSchema({
-					publisher_id: req.session.publisher_id,
-					title: title,
-					project_id: lastid + 1,
-					category: category,
-					live_link: liveLink,
-					overview: overview,
-					frameworks_used: framework,
-					db_used: database,
-					screenshots: screenshotsLinks,
-					thumbnail: thumbnailLink,
-					features: features,
-					project_link: projectLink,
-					publisher: "Shibil",
-					published_date: date2,
-					last_updated: date2,
-					views: 0,
-					downloads: 0,
-					status: "Pending",
-					price: "Free",
-					keywords:
-						title.split(" ").join(",") +
-						" , " +framework.join(',')+" "+category+" "+
-						response?.choices[0]?.message?.content,
-				});
-				newProject.save();
-			});
+		const thumbnailSnapshot = await uploadBytes(storageRefThumbnail, thumbnail);
+		console.log("Uploaded file!");
+		thumbnailLink = await getDownloadURL(thumbnailSnapshot.ref);
+	
+		const response = await openai.chat.completions.create({
+			model: "gpt-3.5-turbo",
+			messages: [{
+					role: "system",
+					content: "You will be provided with a block of text, and your task is to extract a list of keywords from it. it will be given as comma separated values..example task,new,store",
+				},
+				{
+					role: "user",
+					content: overview,
+				},
+			],
+			temperature: 0.5,
+			max_tokens: 64,
+			top_p: 1,
 		});
-
-        res.json({
-            status:"success"
-        })
+	
+		const newProject = new projectSchema({
+			publisher_id: req.session.publisher_id,
+			title: title,
+			project_id: lastid + 1,
+			category: category,
+			live_link: liveLink,
+			overview: overview,
+			frameworks_used: framework,
+			db_used: database,
+			screenshots: screenshotsLinks,
+			thumbnail: thumbnailLink,
+			features: features,
+			project_link: projectLink,
+			publisher: "Shibil",
+			published_date: date2,
+			last_updated: date2,
+			views: 0,
+			downloads: 0,
+			status: "Pending",
+			price: "Free",
+			keywords: title.split(" ").join(",") + " , " + framework.join(',') + " " + category + " " + response?.choices[0]?.message?.content,
+		});
+	
+		await newProject.save();
+	
+		res.json({
+			status: "success"
+		});
 	},
+	
     getLatestList: async (req, res) => {
 		
 		try {

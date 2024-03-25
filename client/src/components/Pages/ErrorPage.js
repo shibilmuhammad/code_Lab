@@ -1,10 +1,11 @@
 import React from 'react'
+import Header from '../Header'
 
-const ErrorPage = () => {
+const ErrorPage = ({err}) => {
   return (
     <div>
       
-
+<Header></Header>
 <div class="grid h-screen place-content-center bg-white px-4">
   <div class="text-center">
     <svg
@@ -40,7 +41,8 @@ const ErrorPage = () => {
 
     <h1 class="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">Uh-oh!</h1>
 
-    <p class="mt-4 text-gray-500">We can't find that page.</p>
+    <p class="mt-4 text-gray-500">Something went wrong...</p>
+    <p class="mt-4 text-gray-500">{err}</p>
   </div>
 </div>
     </div>

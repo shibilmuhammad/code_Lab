@@ -32,7 +32,7 @@ const Home = () => {
 		}
 		call();
 	}, []);
-	if(error) return <ErrorPage />
+	if(error) return <ErrorPage err={error.message} />
   return (
     <div className='bg-primary-mainBg'>
         <Header />
