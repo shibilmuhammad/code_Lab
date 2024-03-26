@@ -31,7 +31,7 @@ const Demo = ({ img, setPicked, setCropped }) => {
 	};
 
 	return (
-		<div>
+		<div >
 			{display && (
 				<div>
 					<Cropper

@@ -138,6 +138,7 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
   },
 ]);
+
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(<RouterProvider router={router}/>)
 
